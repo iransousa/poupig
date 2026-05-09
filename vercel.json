@@ -1,0 +1,10 @@
+{
+  "crons": [
+    { "path": "/api/cron/daily-snapshot", "schedule": "0 3 * * *" },
+    { "path": "/api/cron/reconcile-4p", "schedule": "*/5 * * * *" }
+  ],
+  "functions": {
+    "src/app/api/cron/daily-snapshot/route.ts": { "maxDuration": 60 },
+    "src/app/api/cron/reconcile-4p/route.ts": { "maxDuration": 30 }
+  }
+}
