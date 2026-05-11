@@ -10,7 +10,7 @@ import { getLastCall } from '@/lib/four-p/real-client';
 import { loadDecryptedUserByPrivyId } from '@/lib/crypto/decrypt-user';
 import { withdrawFromKamino } from '@/lib/kamino/sync';
 import { env } from '@/env';
-import { computeOfframpFees, loadFeeConfig, recordFees } from '@/lib/fees/calc';
+import { computeOfframpFees, loadFeeConfig, recordFees, validateLimits } from '@/lib/fees/calc';
 
 const schema = z.object({
   amountBRL: z.coerce.number().min(1).max(50000),
@@ -29,12 +29,15 @@ export async function POST(req: Request) {
   }
 
   const feeCfg = await loadFeeConfig();
-  if (parsed.data.amountBRL < feeCfg.minWithdrawBrl) {
+  const limitCheck = await validateLimits({
+    userId: user.id,
+    kind: 'offramp',
+    amountBrl: parsed.data.amountBRL,
+    cfg: feeCfg,
+  });
+  if (!limitCheck.ok) {
     return NextResponse.json(
-      {
-        error: 'below_minimum',
-        message: `Valor mínimo de saque: R$ ${feeCfg.minWithdrawBrl.toFixed(2)}`,
-      },
+      { error: limitCheck.error, message: limitCheck.message },
       { status: 400 },
     );
   }

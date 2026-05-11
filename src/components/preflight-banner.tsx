@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
-import { Droplet, Copy, ExternalLink, AlertTriangle } from 'lucide-react';
-import { useKaminoPreflight, useKaminoConfig } from '@/hooks/use-kamino-config';
+import { AlertTriangle, Copy, Droplet, ExternalLink } from 'lucide-react';
+import { useKaminoConfig, useKaminoPreflight } from '@/hooks/use-kamino-config';
 import { useMe } from '@/hooks/use-me';
 import { apiFetch } from '@/lib/api/client';
 
@@ -22,6 +22,7 @@ export function PreflightBanner() {
   if (!realMode || !pre || (pre.hasSol && pre.hasUsdc)) return null;
 
   const isDevnet = cfg?.cluster === 'devnet';
+  const isMainnet = cfg?.cluster === 'mainnet-beta';
   const wallet = me?.solanaWalletAddress ?? '';
 
   async function requestSol() {
@@ -47,22 +48,23 @@ export function PreflightBanner() {
   }
 
   return (
-    <div className="mb-4 rounded-3xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-100">
+    <div className="mb-4 rounded-[20px] border border-warning/20 bg-warning/10 p-4 text-[13px] text-warning">
       <div className="flex items-start gap-3">
-        <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400" />
+        <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
         <div className="flex-1 space-y-3">
           {!pre.hasSol && (
             <div className="space-y-2">
-              <p className="text-xs text-amber-200">
-                Precisa de <strong>{pre.minSolRecommended} SOL</strong> pra pagar gas (atual:{' '}
+              <p className="text-[12px] opacity-90">
+                Precisa de <strong>{pre.minSolRecommended} SOL</strong>{' '}
+                {isMainnet ? 'mainnet' : 'devnet'} pra pagar gas (atual:{' '}
                 {(pre.solLamports / 1e9).toFixed(4)} SOL)
               </p>
-              {isDevnet && (
+              {isDevnet ? (
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={requestSol}
                     disabled={airdropping}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-semibold text-ink-950 hover:bg-amber-400 disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-warning px-3 py-1.5 text-[12px] font-semibold text-bg-0 hover:opacity-90 disabled:opacity-50"
                   >
                     <Droplet className="h-3.5 w-3.5" />
                     {airdropping ? 'Solicitando...' : 'Pedir 1 SOL'}
@@ -71,41 +73,57 @@ export function PreflightBanner() {
                     href={SOLANA_FAUCET}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-transparent px-3 py-1.5 text-xs font-medium text-amber-200 hover:bg-amber-500/10"
+                    className="inline-flex items-center gap-1 rounded-full border border-warning/30 bg-transparent px-3 py-1.5 text-[12px] font-medium hover:bg-warning/10"
                   >
                     Faucet alternativo <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
+              ) : (
+                <p className="text-[11px] opacity-75">
+                  Transfira SOL real (qualquer corretora ou wallet) pro endereço abaixo.
+                </p>
               )}
             </div>
           )}
 
           {!pre.hasUsdc && (
             <div className="space-y-2">
-              <p className="text-xs text-amber-200">
-                Sem USDC {cfg?.cluster} na wallet. Use a faucet da Circle:
+              <p className="text-[12px] opacity-90">
+                Sem USDC {isMainnet ? 'mainnet' : 'devnet'} na sua wallet.
+                {isMainnet
+                  ? ' Transfira USDC de uma exchange (Binance, MercadoBitcoin, etc) ou outra wallet.'
+                  : ' Use a faucet da Circle:'}
               </p>
-              {isDevnet && wallet && (
+              {wallet && (
                 <div className="flex items-center gap-2">
-                  <code className="flex-1 truncate rounded-lg bg-ink-950/40 px-2 py-1.5 font-mono text-[10px] text-amber-100 ring-1 ring-amber-500/20">
+                  <code className="flex-1 truncate rounded-[10px] bg-bg-0/40 px-2 py-1.5 font-mono text-[10px] ring-1 ring-warning/20">
                     {wallet}
                   </code>
                   <button
                     onClick={copyWallet}
-                    className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 px-2 py-1.5 text-xs font-medium text-amber-200 hover:bg-amber-500/10"
+                    className="inline-flex items-center gap-1 rounded-full border border-warning/30 px-2 py-1.5 text-[12px] font-medium hover:bg-warning/10"
+                    title="Copiar endereço"
                   >
                     <Copy className="h-3 w-3" />
                   </button>
                 </div>
               )}
-              <a
-                href={CIRCLE_FAUCET}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1.5 text-xs font-semibold text-ink-950 hover:bg-amber-400"
-              >
-                Circle Faucet <ExternalLink className="h-3 w-3" />
-              </a>
+              {isDevnet && (
+                <a
+                  href={CIRCLE_FAUCET}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-warning px-3 py-1.5 text-[12px] font-semibold text-bg-0 hover:opacity-90"
+                >
+                  Circle Faucet <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
+              {isMainnet && (
+                <p className="text-[11px] opacity-75">
+                  Mint USDC mainnet: <code className="font-mono">EPjFWdd5...zwyTDt1v</code> · Rede
+                  Solana
+                </p>
+              )}
             </div>
           )}
         </div>

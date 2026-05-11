@@ -23,12 +23,12 @@ const STATUS_LABEL: Record<HistoryItem['status'], string> = {
   expired: 'Expirado',
 };
 
-const STATUS_STYLE: Record<HistoryItem['status'], string> = {
-  pending: 'bg-amber-500/15 text-amber-300 ring-amber-500/30',
-  processing: 'bg-blue-500/15 text-blue-300 ring-blue-500/30',
-  paid: 'bg-brand-500/15 text-brand-300 ring-brand-500/30',
-  error: 'bg-red-500/15 text-red-300 ring-red-500/30',
-  expired: 'bg-ink-700 text-ink-400 ring-ink-600',
+const STATUS_CLASS: Record<HistoryItem['status'], string> = {
+  pending: 'chip-warning',
+  processing: 'chip-accent',
+  paid: 'chip-success',
+  error: 'chip-danger',
+  expired: 'chip-neutral',
 };
 
 export default function HistoryPage() {
@@ -38,53 +38,51 @@ export default function HistoryPage() {
   });
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-5 pb-16 pt-6">
-      <header className="mb-6 flex items-center gap-3">
+    <main className="mx-auto max-w-lg px-5 pb-16 pt-6">
+      <header className="mb-5 flex items-center gap-3">
         <a
           href="/app"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-ink-800/60 text-ink-300 ring-1 ring-white/5 hover:bg-ink-700"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-2 text-fg-mid ring-1 ring-line hover:bg-bg-3"
         >
           <ArrowLeft className="h-4 w-4" />
         </a>
-        <h1 className="font-display text-2xl font-bold text-ink-50">Histórico</h1>
+        <h1 className="text-h2 text-fg">Histórico</h1>
       </header>
 
-      {isLoading && <p className="text-sm text-ink-400">Carregando...</p>}
+      {isLoading && <p className="text-[13px] text-fg-mid">Carregando...</p>}
 
       {!isLoading && (data?.items.length ?? 0) === 0 && (
         <div className="card text-center">
-          <p className="text-sm text-ink-300">Nenhuma transação ainda.</p>
+          <p className="text-[13px] text-fg-mid">Nenhuma transação ainda.</p>
           <a href="/app/deposit" className="btn-primary mt-4 inline-flex">
             Fazer primeiro depósito
           </a>
         </div>
       )}
 
-      <div className="space-y-2">
+      <div className="space-y-1">
         {data?.items.map((t) => (
           <div
             key={t.id}
-            className="flex items-center justify-between rounded-3xl bg-ink-800/60 p-4 ring-1 ring-white/5 transition hover:bg-ink-700/60"
+            className="flex items-center justify-between rounded-[20px] bg-bg-1 p-4 ring-1 ring-line transition hover:bg-bg-2"
           >
             <div className="flex items-center gap-3">
               <div
-                className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
-                  t.kind === 'onramp'
-                    ? 'bg-brand-500/20 text-brand-300'
-                    : 'bg-ink-700 text-ink-200'
+                className={`flex h-10 w-10 items-center justify-center rounded-[10px] ${
+                  t.kind === 'onramp' ? 'bg-accent-soft text-accent' : 'bg-bg-3 text-fg-mid'
                 }`}
               >
                 {t.kind === 'onramp' ? (
-                  <ArrowDownLeft className="h-5 w-5" />
+                  <ArrowDownLeft className="h-4 w-4" />
                 ) : (
-                  <ArrowUpRight className="h-5 w-5" />
+                  <ArrowUpRight className="h-4 w-4" />
                 )}
               </div>
               <div>
-                <p className="text-sm font-semibold text-ink-50">
+                <p className="text-[14px] font-medium text-fg">
                   {t.kind === 'onramp' ? 'Depósito' : 'Saque'}
                 </p>
-                <p className="text-xs text-ink-400">
+                <p className="text-[11px] text-fg-dim">
                   {new Date(t.createdAt).toLocaleString('pt-BR', {
                     day: '2-digit',
                     month: '2-digit',
@@ -95,12 +93,10 @@ export default function HistoryPage() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold text-ink-50">
+              <p className="text-[14px] font-semibold text-fg">
                 {formatBRL(Number(t.amountBrl ?? 0))}
               </p>
-              <span
-                className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ring-1 ${STATUS_STYLE[t.status]}`}
-              >
+              <span className={`chip ${STATUS_CLASS[t.status]} mt-1`}>
                 {STATUS_LABEL[t.status]}
               </span>
             </div>

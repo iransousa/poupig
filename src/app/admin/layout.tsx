@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import {
   ArrowLeft,
+  DollarSign,
   LayoutDashboard,
   LifeBuoy,
   ListOrdered,
@@ -19,6 +20,7 @@ const NAV = [
   { href: '/admin/customers', label: 'Clientes', icon: Users },
   { href: '/admin/transactions', label: 'Transações', icon: ListOrdered },
   { href: '/admin/strategies', label: 'Estratégias', icon: Settings },
+  { href: '/admin/finance', label: 'Finance', icon: DollarSign },
   { href: '/admin/support', label: 'Suporte', icon: LifeBuoy },
 ];
 
@@ -38,9 +40,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!ready || !authenticated || isLoading || !isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-ink-300">
+      <div className="flex min-h-screen items-center justify-center text-fg-mid">
         <div className="flex items-center gap-3">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-brand-400" />
+          <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
           Verificando permissões...
         </div>
       </div>
@@ -49,19 +51,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex min-h-screen">
-      <aside className="hidden w-64 flex-shrink-0 border-r border-white/5 bg-ink-900/60 p-4 md:flex md:flex-col">
-        <Link href="/app" className="mb-6 flex items-center gap-2 text-sm text-ink-300 hover:text-ink-50">
+      <aside className="hidden w-64 flex-shrink-0 border-r border-line bg-bg-1 p-4 md:flex md:flex-col">
+        <Link
+          href="/app"
+          className="mb-6 flex items-center gap-2 text-[13px] text-fg-mid hover:text-fg"
+        >
           <ArrowLeft className="h-4 w-4" />
           Voltar ao app
         </Link>
 
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-brand font-display font-bold text-white shadow-glow">
+          <div className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-accent font-display font-bold text-bg-0 shadow-accent">
             P
           </div>
           <div>
-            <p className="font-display text-sm font-bold text-ink-50">PoupApp</p>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-300">
+            <p className="font-display text-[13px] font-bold text-fg">PoupApp</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-accent">
               Admin · {role}
             </p>
           </div>
@@ -77,10 +82,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-[13px] font-medium transition ${
                   active
-                    ? 'bg-brand-500/15 text-brand-200 ring-1 ring-brand-500/30'
-                    : 'text-ink-300 hover:bg-ink-800 hover:text-ink-50'
+                    ? 'bg-accent-soft text-accent ring-1 ring-accent/30'
+                    : 'text-fg-mid hover:bg-bg-2 hover:text-fg'
                 }`}
               >
                 <Icon className="h-4 w-4" />
@@ -92,11 +97,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       <main className="flex-1 overflow-x-hidden">
-        <div className="md:hidden sticky top-0 z-10 flex items-center gap-3 border-b border-white/5 bg-ink-900/80 px-4 py-3 backdrop-blur">
-          <Link href="/app" className="text-ink-300">
+        <div className="sticky top-0 z-10 flex items-center gap-3 border-b border-line bg-bg-1/80 px-4 py-3 backdrop-blur md:hidden">
+          <Link href="/app" className="text-fg-mid">
             <ArrowLeft className="h-4 w-4" />
           </Link>
-          <p className="font-display text-sm font-bold">Admin</p>
+          <p className="font-display text-[13px] font-bold">Admin</p>
         </div>
         {children}
       </main>

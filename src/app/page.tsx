@@ -3,7 +3,7 @@
 import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { ArrowRight, Shield, Zap, TrendingUp } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, Zap } from 'lucide-react';
 import { useMe } from '@/hooks/use-me';
 
 export default function Home() {
@@ -17,29 +17,27 @@ export default function Home() {
   }, [ready, authenticated, me, router]);
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-12">
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-brand-600/30 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-brand-400/20 blur-[100px]" />
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-12">
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[500px] -translate-x-1/2 rounded-full bg-accent/30 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-accent/15 blur-[100px]" />
 
       <div className="relative z-10 w-full max-w-md animate-slide-up space-y-8 text-center">
         <div className="flex items-center justify-center">
           <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-brand-500 blur-xl opacity-60" />
-            <div className="relative flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-brand font-display text-3xl font-bold text-white shadow-glow">
+            <div className="absolute inset-0 rounded-3xl bg-accent blur-xl opacity-50" />
+            <div className="relative flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-brand font-display text-3xl font-bold text-bg-0 shadow-accent">
               P
             </div>
           </div>
         </div>
 
         <div className="space-y-3">
-          <h1 className="font-display text-5xl font-bold tracking-tight">
+          <h1 className="text-h1 text-fg" style={{ fontSize: 40, lineHeight: 1.08 }}>
             Sua poupança
             <br />
-            <span className="bg-gradient-to-r from-brand-400 via-brand-300 to-brand-200 bg-clip-text text-transparent">
-              em dólar
-            </span>
+            <span className="text-accent">em dólar</span>
           </h1>
-          <p className="text-lg text-ink-200">
+          <p className="text-body text-fg-mid">
             Deposite via PIX, renda como dólar,
             <br />
             saque quando quiser.
@@ -47,11 +45,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-          <button
-            onClick={login}
-            disabled={!ready}
-            className="btn-primary group w-full py-4 text-base"
-          >
+          <button onClick={login} disabled={!ready} className="btn-primary group w-full">
             {ready ? (
               <>
                 Começar agora
@@ -61,7 +55,7 @@ export default function Home() {
               'Carregando...'
             )}
           </button>
-          <p className="text-xs text-ink-400">
+          <p className="text-xs text-fg-dim">
             Sem taxas escondidas · Sem burocracia · Saque a qualquer hora
           </p>
         </div>
@@ -72,7 +66,7 @@ export default function Home() {
           <Feature icon={<TrendingUp className="h-4 w-4" />} label="Rende" sub="Yield diário" />
         </div>
 
-        <p className="pt-6 text-[11px] uppercase tracking-wider text-ink-400">
+        <p className="pt-6 text-[11px] uppercase tracking-wider text-fg-dim">
           USDC · Solana · Kamino Finance
         </p>
       </div>
@@ -82,12 +76,12 @@ export default function Home() {
 
 function Feature({ icon, label, sub }: { icon: React.ReactNode; label: string; sub: string }) {
   return (
-    <div className="rounded-2xl bg-ink-800/50 p-3 ring-1 ring-white/5 backdrop-blur">
-      <div className="mx-auto mb-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-brand-500/20 text-brand-300">
+    <div className="rounded-[20px] bg-bg-1 p-3 ring-1 ring-line backdrop-blur">
+      <div className="mx-auto mb-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-accent-soft text-accent">
         {icon}
       </div>
-      <p className="text-xs font-semibold text-ink-100">{label}</p>
-      <p className="text-[10px] text-ink-400">{sub}</p>
+      <p className="text-xs font-semibold text-fg">{label}</p>
+      <p className="text-[10px] text-fg-mid">{sub}</p>
     </div>
   );
 }

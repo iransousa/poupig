@@ -15,7 +15,11 @@ type FeeCfg = {
   offrampPercentBps: number;
   performancePercentBps: number;
   minDepositBrl: number;
+  maxDepositBrl: number;
   minWithdrawBrl: number;
+  maxWithdrawBrl: number;
+  dailyMaxBrl: number;
+  monthlyMaxBrl: number;
 };
 
 type Revenue = {
@@ -161,45 +165,92 @@ export default function FinancePage() {
         </div>
 
         {form ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            <FeeRow
-              label="Taxa fixa depósito (R$)"
-              value={form.onrampFixedBrl}
-              onChange={(v) => setForm({ ...form, onrampFixedBrl: v })}
-            />
-            <FeeRow
-              label="Taxa % depósito (bps)"
-              value={form.onrampPercentBps}
-              onChange={(v) => setForm({ ...form, onrampPercentBps: v })}
-              helper={`${(form.onrampPercentBps / 100).toFixed(2)}%`}
-            />
-            <FeeRow
-              label="Taxa fixa saque (R$)"
-              value={form.offrampFixedBrl}
-              onChange={(v) => setForm({ ...form, offrampFixedBrl: v })}
-            />
-            <FeeRow
-              label="Taxa % saque (bps)"
-              value={form.offrampPercentBps}
-              onChange={(v) => setForm({ ...form, offrampPercentBps: v })}
-              helper={`${(form.offrampPercentBps / 100).toFixed(2)}%`}
-            />
-            <FeeRow
-              label="Performance fee (bps, anual)"
-              value={form.performancePercentBps}
-              onChange={(v) => setForm({ ...form, performancePercentBps: v })}
-              helper={`${(form.performancePercentBps / 100).toFixed(2)}% a.a.`}
-            />
-            <FeeRow
-              label="Mínimo depósito (R$)"
-              value={form.minDepositBrl}
-              onChange={(v) => setForm({ ...form, minDepositBrl: v })}
-            />
-            <FeeRow
-              label="Mínimo saque (R$)"
-              value={form.minWithdrawBrl}
-              onChange={(v) => setForm({ ...form, minWithdrawBrl: v })}
-            />
+          <div className="space-y-6">
+            <div>
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-400">
+                Taxas
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <FeeRow
+                  label="Taxa fixa depósito (R$)"
+                  value={form.onrampFixedBrl}
+                  onChange={(v) => setForm({ ...form, onrampFixedBrl: v })}
+                />
+                <FeeRow
+                  label="Taxa % depósito (bps)"
+                  value={form.onrampPercentBps}
+                  onChange={(v) => setForm({ ...form, onrampPercentBps: v })}
+                  helper={`${(form.onrampPercentBps / 100).toFixed(2)}%`}
+                />
+                <FeeRow
+                  label="Taxa fixa saque (R$)"
+                  value={form.offrampFixedBrl}
+                  onChange={(v) => setForm({ ...form, offrampFixedBrl: v })}
+                />
+                <FeeRow
+                  label="Taxa % saque (bps)"
+                  value={form.offrampPercentBps}
+                  onChange={(v) => setForm({ ...form, offrampPercentBps: v })}
+                  helper={`${(form.offrampPercentBps / 100).toFixed(2)}%`}
+                />
+                <FeeRow
+                  label="Performance fee (bps, anual)"
+                  value={form.performancePercentBps}
+                  onChange={(v) => setForm({ ...form, performancePercentBps: v })}
+                  helper={`${(form.performancePercentBps / 100).toFixed(2)}% a.a.`}
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-400">
+                Limites por transação
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <FeeRow
+                  label="Mínimo depósito (R$)"
+                  value={form.minDepositBrl}
+                  onChange={(v) => setForm({ ...form, minDepositBrl: v })}
+                />
+                <FeeRow
+                  label="Máximo depósito (R$)"
+                  value={form.maxDepositBrl}
+                  onChange={(v) => setForm({ ...form, maxDepositBrl: v })}
+                  helper="por transação"
+                />
+                <FeeRow
+                  label="Mínimo saque (R$)"
+                  value={form.minWithdrawBrl}
+                  onChange={(v) => setForm({ ...form, minWithdrawBrl: v })}
+                />
+                <FeeRow
+                  label="Máximo saque (R$)"
+                  value={form.maxWithdrawBrl}
+                  onChange={(v) => setForm({ ...form, maxWithdrawBrl: v })}
+                  helper="por transação"
+                />
+              </div>
+            </div>
+
+            <div>
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink-400">
+                Limites acumulados por usuário
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2">
+                <FeeRow
+                  label="Máximo diário (R$)"
+                  value={form.dailyMaxBrl}
+                  onChange={(v) => setForm({ ...form, dailyMaxBrl: v })}
+                  helper="soma depósito + saque/dia"
+                />
+                <FeeRow
+                  label="Máximo mensal (R$)"
+                  value={form.monthlyMaxBrl}
+                  onChange={(v) => setForm({ ...form, monthlyMaxBrl: v })}
+                  helper="soma depósito + saque/mês"
+                />
+              </div>
+            </div>
           </div>
         ) : (
           <p className="text-sm text-ink-400">Carregando...</p>

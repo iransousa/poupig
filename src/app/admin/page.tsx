@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { useAdminMetrics, useTvlSeries } from '@/hooks/use-admin';
-import { formatBRL, formatUSDC } from '@/lib/utils';
+import { formatBRL, formatPct, formatUSD } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const { data: m } = useAdminMetrics();
@@ -20,9 +20,11 @@ export default function AdminDashboard() {
   return (
     <div className="mx-auto max-w-6xl p-6">
       <header className="mb-6">
-        <h1 className="font-display text-3xl font-bold text-ink-50">Dashboard</h1>
-        <p className="text-sm text-ink-400">
-          {m ? `Atualizado ${new Date(m.generatedAt).toLocaleTimeString('pt-BR')}` : 'Carregando métricas...'}
+        <h1 className="text-h1 text-fg">Dashboard</h1>
+        <p className="text-[13px] text-fg-mid">
+          {m
+            ? `Atualizado ${new Date(m.generatedAt).toLocaleTimeString('pt-BR')}`
+            : 'Carregando métricas...'}
         </p>
       </header>
 
@@ -31,14 +33,14 @@ export default function AdminDashboard() {
           icon={<Wallet className="h-4 w-4" />}
           label="TVL"
           primary={m ? formatBRL(m.tvl.brl) : '—'}
-          secondary={m ? `≈ ${formatUSDC(m.tvl.usdc, 2)}` : ''}
+          secondary={m ? `≈ ${formatUSD(m.tvl.usdc, 2)}` : ''}
           accent
         />
         <KpiCard
           icon={<TrendingUp className="h-4 w-4" />}
           label="Rendimento acumulado"
-          primary={m ? `+ ${formatUSDC(m.tvl.yieldUsdc, 4)}` : '—'}
-          secondary={m ? `APY médio ${m.tvl.avgApy.toFixed(2)}%` : ''}
+          primary={m ? `+ ${formatUSD(m.tvl.yieldUsdc, 4)}` : '—'}
+          secondary={m ? `APY médio ${formatPct(m.tvl.avgApy)}` : ''}
         />
         <KpiCard
           icon={<Users className="h-4 w-4" />}
@@ -76,8 +78,8 @@ export default function AdminDashboard() {
       <section className="mt-6 card">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="font-display text-lg font-bold text-ink-50">TVL últimos 30 dias</h2>
-            <p className="text-xs text-ink-400">Snapshots diários em BRL</p>
+            <h2 className="text-h3 text-fg">TVL últimos 30 dias</h2>
+            <p className="text-[11px] text-fg-dim">Snapshots diários em BRL</p>
           </div>
         </div>
         <div className="h-64">
@@ -86,18 +88,18 @@ export default function AdminDashboard() {
               <AreaChart data={tvl.series}>
                 <defs>
                   <linearGradient id="tvlGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#a855f7" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#a855f7" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--p-accent)" stopOpacity={0.5} />
+                    <stop offset="100%" stopColor="var(--p-accent)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <XAxis dataKey="date" stroke="#6b6b85" tick={{ fontSize: 11 }} />
-                <YAxis stroke="#6b6b85" tick={{ fontSize: 11 }} />
+                <XAxis dataKey="date" stroke="rgba(247,247,248,0.38)" tick={{ fontSize: 11 }} />
+                <YAxis stroke="rgba(247,247,248,0.38)" tick={{ fontSize: 11 }} />
                 <Tooltip
                   contentStyle={{
-                    borderRadius: 12,
+                    borderRadius: 14,
                     border: '1px solid rgba(255,255,255,0.1)',
-                    background: 'rgba(17,17,24,0.9)',
-                    color: '#fff',
+                    background: 'rgba(28,28,31,0.95)',
+                    color: '#F7F7F8',
                     fontSize: 12,
                   }}
                   formatter={(v: number) => [formatBRL(v), 'TVL']}
@@ -105,14 +107,14 @@ export default function AdminDashboard() {
                 <Area
                   type="monotone"
                   dataKey="tvlBrl"
-                  stroke="#a855f7"
+                  stroke="var(--p-accent)"
                   strokeWidth={2.5}
                   fill="url(#tvlGrad)"
                 />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-ink-500">
+            <div className="flex h-full items-center justify-center text-[13px] text-fg-dim">
               Sem snapshots ainda
             </div>
           )}
@@ -140,21 +142,21 @@ function KpiCard({
   return (
     <div
       className={`card p-4 ${
-        accent ? 'ring-brand-500/30 bg-brand-500/5' : warn ? 'ring-red-500/30 bg-red-500/5' : ''
+        accent ? 'bg-accent-soft ring-accent/30' : warn ? 'bg-danger/5 ring-danger/30' : ''
       }`}
     >
-      <div className={`flex items-center gap-1.5 ${warn ? 'text-red-300' : 'text-ink-400'}`}>
+      <div className={`flex items-center gap-1.5 ${warn ? 'text-danger' : 'text-fg-dim'}`}>
         {icon}
         <span className="text-[10px] font-medium uppercase tracking-wider">{label}</span>
       </div>
       <p
-        className={`mt-1.5 font-display text-xl font-bold ${
-          accent ? 'text-brand-200' : warn ? 'text-red-300' : 'text-ink-50'
+        className={`mt-1.5 text-h3 ${
+          accent ? 'text-accent' : warn ? 'text-danger' : 'text-fg'
         }`}
       >
         {primary}
       </p>
-      {secondary && <p className="text-[11px] text-ink-500">{secondary}</p>}
+      {secondary && <p className="text-[11px] text-fg-dim">{secondary}</p>}
     </div>
   );
 }

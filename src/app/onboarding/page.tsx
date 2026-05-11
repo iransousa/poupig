@@ -72,8 +72,7 @@ export default function OnboardingPage() {
       toast.success('Cadastro concluído!');
       router.replace('/app');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Erro ao cadastrar';
-      toast.error(msg);
+      toast.error(err instanceof Error ? err.message : 'Erro ao cadastrar');
     } finally {
       setSubmitting(false);
     }
@@ -81,7 +80,7 @@ export default function OnboardingPage() {
 
   if (!ready || isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-ink-300">
+      <div className="flex min-h-screen items-center justify-center text-fg-mid">
         Carregando...
       </div>
     );
@@ -90,44 +89,42 @@ export default function OnboardingPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-5 py-10">
       <form onSubmit={handleSubmit} className="card w-full max-w-md animate-slide-up">
-        <h1 className="font-display text-3xl font-bold text-ink-50">Bem-vindo 👋</h1>
-        <p className="mt-1 text-sm text-ink-300">
+        <h1 className="text-h1 text-fg">Bem-vindo 👋</h1>
+        <p className="mt-1 text-[13px] text-fg-mid">
           Só mais alguns dados pra liberar depósitos via PIX.
         </p>
 
         <div
-          className={`mt-5 flex items-start gap-3 rounded-2xl p-3 ring-1 ${
+          className={`mt-5 flex items-start gap-3 rounded-[14px] p-3 ring-1 ${
             solanaWallet
-              ? 'bg-brand-500/10 text-brand-200 ring-brand-500/30'
-              : 'bg-amber-500/10 text-amber-200 ring-amber-500/30'
+              ? 'bg-accent-soft text-accent ring-accent/30'
+              : 'bg-warning/10 text-warning ring-warning/30'
           }`}
         >
           <div
-            className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl ${
-              solanaWallet ? 'bg-brand-500/20 text-brand-300' : 'bg-amber-500/20 text-amber-300'
+            className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] ${
+              solanaWallet ? 'bg-accent-soft text-accent' : 'bg-warning/15 text-warning'
             }`}
           >
             {solanaWallet ? <ShieldCheck className="h-4 w-4" /> : <Wallet className="h-4 w-4" />}
           </div>
-          <div className="flex-1 text-sm">
+          <div className="flex-1 text-[13px]">
             {solanaWallet ? (
               <>
                 <p className="font-semibold">Carteira Solana pronta</p>
-                <p className="mt-0.5 break-all font-mono text-[10px] opacity-80">
-                  {solanaWallet}
-                </p>
+                <p className="mt-0.5 break-all font-mono text-[10px] opacity-80">{solanaWallet}</p>
               </>
             ) : (
               <>
                 <p className="font-semibold">Carteira não criada</p>
-                <p className="mt-0.5 text-xs opacity-90">
+                <p className="mt-0.5 text-[11px] opacity-90">
                   Precisamos criar sua carteira Solana pra receber os USDC.
                 </p>
                 <button
                   type="button"
                   onClick={handleCreateWallet}
                   disabled={creatingWallet}
-                  className="mt-3 w-full rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-ink-950 hover:bg-amber-400 disabled:opacity-50"
+                  className="mt-3 w-full rounded-[10px] bg-warning px-3 py-2 text-[13px] font-semibold text-bg-0 hover:opacity-90 disabled:opacity-50"
                 >
                   {creatingWallet ? 'Criando...' : 'Criar carteira'}
                 </button>
@@ -167,8 +164,10 @@ export default function OnboardingPage() {
           </Field>
         </div>
 
-        <button type="submit" disabled={!canSubmit} className="btn-primary mt-6 w-full py-4">
-          {submitting ? 'Salvando...' : (
+        <button type="submit" disabled={!canSubmit} className="btn-primary mt-6 w-full">
+          {submitting ? (
+            'Salvando...'
+          ) : (
             <>
               <Check className="h-4 w-4" />
               Continuar
@@ -176,7 +175,7 @@ export default function OnboardingPage() {
           )}
         </button>
 
-        <p className="mt-4 text-center text-[11px] text-ink-500">
+        <p className="mt-4 text-center text-[11px] text-fg-dim">
           Seus dados são criptografados antes de serem armazenados.
         </p>
       </form>
@@ -197,7 +196,7 @@ function Field({
     <label className="block">
       <span className="label-field">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-xs text-red-400">{error}</span>}
+      {error && <span className="mt-1 block text-[11px] text-danger">{error}</span>}
     </label>
   );
 }

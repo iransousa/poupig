@@ -20,7 +20,11 @@ const schema = z.object({
   offrampPercentBps: z.coerce.number().int().min(0).max(10000),
   performancePercentBps: z.coerce.number().int().min(0).max(10000),
   minDepositBrl: z.coerce.number().min(0),
+  maxDepositBrl: z.coerce.number().min(0),
   minWithdrawBrl: z.coerce.number().min(0),
+  maxWithdrawBrl: z.coerce.number().min(0),
+  dailyMaxBrl: z.coerce.number().min(0),
+  monthlyMaxBrl: z.coerce.number().min(0),
 });
 
 export async function POST(req: Request) {
@@ -44,7 +48,11 @@ export async function POST(req: Request) {
     offrampPercentBps: parsed.data.offrampPercentBps,
     performancePercentBps: parsed.data.performancePercentBps,
     minDepositBrl: parsed.data.minDepositBrl.toFixed(2),
+    maxDepositBrl: parsed.data.maxDepositBrl.toFixed(2),
     minWithdrawBrl: parsed.data.minWithdrawBrl.toFixed(2),
+    maxWithdrawBrl: parsed.data.maxWithdrawBrl.toFixed(2),
+    dailyMaxBrl: parsed.data.dailyMaxBrl.toFixed(2),
+    monthlyMaxBrl: parsed.data.monthlyMaxBrl.toFixed(2),
     updatedBy: ctx.userId,
   });
 

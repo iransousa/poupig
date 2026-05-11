@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm typecheck *)"
+      "Bash(pnpm typecheck *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm build *)",
+      "Bash(cmd //c \"rmdir /s /q .next\")"
     ]
   }
 }

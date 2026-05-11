@@ -5,7 +5,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { toast } from 'sonner';
 import { ArrowLeft, Check, Copy, Sparkles } from 'lucide-react';
 import { apiFetch } from '@/lib/api/client';
-import { formatBRL, formatUSDC } from '@/lib/utils';
+import { formatBRL, formatUSDC, formatUSD } from '@/lib/utils';
 import { useTransaction } from '@/hooks/use-transaction';
 import { useKaminoSigning } from '@/hooks/use-kamino-signing';
 import { EnvBadge } from '@/components/env-badge';
@@ -109,15 +109,15 @@ export default function DepositPage() {
   const isPending = status === 'pending' || status === 'processing';
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-5 pb-16 pt-6">
-      <header className="mb-6 flex items-center gap-3">
+    <main className="mx-auto max-w-lg px-5 pb-16 pt-6">
+      <header className="mb-5 flex items-center gap-3">
         <a
           href="/app"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-ink-800/60 text-ink-300 ring-1 ring-white/5 hover:bg-ink-700"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-2 text-fg-mid ring-1 ring-line hover:bg-bg-3"
         >
           <ArrowLeft className="h-4 w-4" />
         </a>
-        <h1 className="font-display text-2xl font-bold text-ink-50">Depositar</h1>
+        <h1 className="text-h2 text-fg">Depositar</h1>
         <div className="ml-auto">
           <EnvBadge />
         </div>
@@ -127,8 +127,8 @@ export default function DepositPage() {
         <section className="card animate-slide-up">
           <label className="block">
             <span className="label-field">Valor em reais</span>
-            <div className="flex items-center rounded-2xl border border-ink-700 bg-ink-900/60 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/30">
-              <span className="pl-4 text-ink-400">R$</span>
+            <div className="flex items-center rounded-[14px] border border-line bg-bg-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30">
+              <span className="pl-4 text-fg-mid">R$</span>
               <input
                 type="number"
                 min="1"
@@ -139,12 +139,12 @@ export default function DepositPage() {
                   setQuote(null);
                 }}
                 onBlur={fetchQuote}
-                className="w-full rounded-2xl bg-transparent px-2 py-3.5 text-lg font-semibold text-ink-50 focus:outline-none"
+                className="w-full rounded-[14px] bg-transparent px-2 py-3.5 text-h3 font-semibold text-fg focus:outline-none"
               />
             </div>
           </label>
 
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             {['50', '100', '250', '500'].map((v) => (
               <button
                 key={v}
@@ -161,11 +161,11 @@ export default function DepositPage() {
           </div>
 
           {quote && (
-            <div className="mt-4 flex items-center gap-2 rounded-2xl bg-brand-500/10 p-3 text-sm text-brand-200 ring-1 ring-brand-500/20">
+            <div className="mt-4 flex items-center gap-2 rounded-[14px] bg-accent-soft p-3 text-[13px] text-accent ring-1 ring-accent/20">
               <Sparkles className="h-4 w-4" />
               <div>
-                Você recebe <strong>{formatUSDC(quote.amountOut, 6)}</strong>
-                <span className="ml-2 text-xs text-ink-400">
+                Você recebe <strong>{formatUSD(quote.amountOut, 4)}</strong>
+                <span className="ml-2 text-[11px] text-fg-mid">
                   a {formatBRL(quote.rate)}/USDC
                 </span>
               </div>
@@ -175,18 +175,18 @@ export default function DepositPage() {
           <button
             onClick={createDeposit}
             disabled={creating || !amount || Number(amount) <= 0}
-            className="btn-primary mt-6 w-full py-4 text-base"
+            className="btn-primary mt-6 w-full"
           >
             {creating ? 'Gerando PIX...' : 'Gerar PIX'}
           </button>
 
           {IS_MOCK && (
-            <p className="mt-3 text-center text-xs text-amber-300/80">
+            <p className="mt-3 text-center text-[11px] text-warning/80">
               Modo MOCK · PIX simulado, sem cobrança real
             </p>
           )}
           {KAMINO_REAL && (
-            <p className="mt-1 text-center text-xs text-brand-300">
+            <p className="mt-1 text-center text-[11px] text-accent">
               Kamino {KAMINO_ENV} · depósito on-chain real após pagamento
             </p>
           )}
@@ -197,49 +197,45 @@ export default function DepositPage() {
         <section className="card animate-slide-up">
           {isPaid ? (
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-brand-500/20 text-brand-300 shadow-glow">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft text-accent shadow-accent">
                 <Check className="h-10 w-10" strokeWidth={3} />
               </div>
-              <h2 className="font-display text-2xl font-bold text-ink-50">
-                Pagamento confirmado!
-              </h2>
-              <p className="mt-1 text-sm text-ink-300">
-                {formatUSDC(payload.amountUSDC, 2)} chegou na sua carteira.
+              <h2 className="text-h2 text-fg">Pagamento confirmado!</h2>
+              <p className="mt-1 text-[13px] text-fg-mid">
+                {formatUSD(payload.amountUSDC, 2)} chegou na sua carteira.
               </p>
 
               {KAMINO_REAL && !onChainSig && (
                 <button
                   onClick={signKaminoDeposit}
                   disabled={signing}
-                  className="btn-primary mt-6 w-full py-4"
+                  className="btn-primary mt-6 w-full"
                 >
                   {signing ? 'Assinando...' : `Aplicar no Kamino (${KAMINO_ENV})`}
                 </button>
               )}
               {onChainSig && (
-                <div className="mt-4 rounded-2xl bg-ink-900/60 p-3 ring-1 ring-white/5">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-ink-500">
+                <div className="mt-4 rounded-[14px] bg-bg-2 p-3 ring-1 ring-line">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-fg-dim">
                     Kamino signature
                   </p>
-                  <p className="mt-1 break-all font-mono text-[11px] text-brand-300">
-                    {onChainSig}
-                  </p>
+                  <p className="mt-1 break-all font-mono text-[11px] text-accent">{onChainSig}</p>
                 </div>
               )}
 
-              <a href="/app" className="btn-ghost mt-4 w-full py-3.5">
+              <a href="/app" className="btn-secondary mt-4 w-full">
                 Voltar
               </a>
             </div>
           ) : (
             <>
-              <p className="text-sm text-ink-300">Escaneie ou copie o código PIX</p>
-              <p className="mt-1 font-display text-3xl font-bold text-ink-50">
+              <p className="text-[13px] text-fg-mid">Escaneie ou copie o código PIX</p>
+              <p className="mt-1 text-display tracking-tight text-fg">
                 {formatBRL(payload.amountBRL)}
               </p>
-              <p className="text-xs text-ink-400">≈ {formatUSDC(payload.amountUSDC, 6)}</p>
+              <p className="text-[11px] text-fg-dim">≈ {formatUSDC(payload.amountUSDC, 6)}</p>
 
-              <div className="mt-6 flex justify-center rounded-3xl bg-white p-6">
+              <div className="mt-6 flex justify-center rounded-[20px] bg-white p-6">
                 <QRCodeSVG value={payload.pixCopiaECola} size={200} level="M" />
               </div>
 
@@ -248,19 +244,19 @@ export default function DepositPage() {
                   navigator.clipboard.writeText(payload.pixCopiaECola);
                   toast.success('Copiado!');
                 }}
-                className="btn-ghost mt-4 w-full py-3.5"
+                className="btn-secondary mt-4 w-full"
               >
                 <Copy className="h-4 w-4" />
                 Copiar código PIX
               </button>
 
-              <div className="mt-4 flex items-center justify-center gap-2 text-sm">
+              <div className="mt-4 flex items-center justify-center gap-2 text-[13px]">
                 <span
                   className={`h-2 w-2 rounded-full ${
-                    isPending ? 'animate-pulse-soft bg-amber-400' : 'bg-ink-600'
+                    isPending ? 'animate-pulse-soft bg-warning' : 'bg-bg-3'
                   }`}
                 />
-                <span className="text-ink-300">
+                <span className="text-fg-mid">
                   {isPending ? 'Aguardando pagamento...' : status ?? 'Aguardando'}
                 </span>
               </div>
@@ -268,7 +264,7 @@ export default function DepositPage() {
               {IS_MOCK && (
                 <button
                   onClick={simulatePayment}
-                  className="mt-4 w-full rounded-2xl border border-dashed border-amber-500/30 bg-amber-500/5 px-4 py-2.5 text-xs font-medium text-amber-300 hover:bg-amber-500/10"
+                  className="mt-4 w-full rounded-full border border-dashed border-warning/30 bg-warning/5 px-4 py-2.5 text-[12px] font-medium text-warning hover:bg-warning/10"
                 >
                   🧪 Simular pagamento · mock
                 </button>

@@ -21,9 +21,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!ready || !authenticated || isLoading || (me && !me.onboarded)) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-ink-300">
+      <div className="flex min-h-screen items-center justify-center text-fg-mid">
         <div className="flex items-center gap-3">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-brand-400" />
+          <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
           Carregando...
         </div>
       </div>

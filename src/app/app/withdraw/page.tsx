@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Check, Sparkles } from 'lucide-react';
 import { apiFetch } from '@/lib/api/client';
-import { formatBRL, formatUSDC } from '@/lib/utils';
+import { formatBRL, formatUSDC, formatUSD } from '@/lib/utils';
 import { useBalance } from '@/hooks/use-balance';
 import { useTransaction } from '@/hooks/use-transaction';
 import { useKaminoSigning } from '@/hooks/use-kamino-signing';
@@ -14,7 +14,6 @@ import { EnvBadge } from '@/components/env-badge';
 import { PreflightBanner } from '@/components/preflight-banner';
 
 type QuoteResponse = { amountIn: number; amountOut: number; rate: number };
-
 type WithdrawCreated = {
   id: string;
   status: string;
@@ -116,15 +115,15 @@ export default function WithdrawPage() {
   }
 
   return (
-    <main className="mx-auto min-h-screen max-w-lg px-5 pb-16 pt-6">
-      <header className="mb-6 flex items-center gap-3">
+    <main className="mx-auto max-w-lg px-5 pb-16 pt-6">
+      <header className="mb-5 flex items-center gap-3">
         <a
           href="/app"
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-ink-800/60 text-ink-300 ring-1 ring-white/5 hover:bg-ink-700"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-bg-2 text-fg-mid ring-1 ring-line hover:bg-bg-3"
         >
           <ArrowLeft className="h-4 w-4" />
         </a>
-        <h1 className="font-display text-2xl font-bold text-ink-50">Sacar</h1>
+        <h1 className="text-h2 text-fg">Sacar</h1>
         <div className="ml-auto">
           <EnvBadge />
         </div>
@@ -134,16 +133,16 @@ export default function WithdrawPage() {
 
       {!payload && (
         <section className="card animate-slide-up">
-          <div className="mb-5 rounded-2xl bg-ink-900/60 p-3 ring-1 ring-white/5">
-            <p className="text-xs text-ink-400">Disponível</p>
-            <p className="font-display text-lg font-bold text-ink-50">{formatBRL(maxBRL)}</p>
-            <p className="text-xs text-ink-500">≈ {formatUSDC(balance?.usdc ?? 0)}</p>
+          <div className="mb-5 rounded-[14px] bg-bg-2 p-3 ring-1 ring-line">
+            <p className="text-[11px] text-fg-dim">Disponível</p>
+            <p className="text-h3 text-fg">{formatBRL(maxBRL)}</p>
+            <p className="text-[11px] text-fg-dim">≈ {formatUSD(balance?.usdc ?? 0)}</p>
           </div>
 
           <label className="block">
             <span className="label-field">Valor em reais</span>
-            <div className="flex items-center rounded-2xl border border-ink-700 bg-ink-900/60 focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/30">
-              <span className="pl-4 text-ink-400">R$</span>
+            <div className="flex items-center rounded-[14px] border border-line bg-bg-2 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/30">
+              <span className="pl-4 text-fg-mid">R$</span>
               <input
                 type="number"
                 min="1"
@@ -155,7 +154,7 @@ export default function WithdrawPage() {
                   setQuote(null);
                 }}
                 onBlur={fetchQuote}
-                className="w-full rounded-2xl bg-transparent px-2 py-3.5 text-lg font-semibold text-ink-50 focus:outline-none"
+                className="w-full rounded-[14px] bg-transparent px-2 py-3.5 text-h3 font-semibold text-fg focus:outline-none"
               />
             </div>
           </label>
@@ -174,9 +173,9 @@ export default function WithdrawPage() {
           </div>
 
           {quote && (
-            <div className="mt-4 flex items-center gap-2 rounded-2xl bg-brand-500/10 p-3 text-sm text-brand-200 ring-1 ring-brand-500/20">
+            <div className="mt-4 flex items-center gap-2 rounded-[14px] bg-accent-soft p-3 text-[13px] text-accent ring-1 ring-accent/20">
               <Sparkles className="h-4 w-4" />
-              Serão descontados <strong>{formatUSDC(quote.amountOut, 6)}</strong>
+              Serão descontados <strong>{formatUSD(quote.amountOut, 4)}</strong>
             </div>
           )}
 
@@ -185,7 +184,7 @@ export default function WithdrawPage() {
             disabled={
               creating || signing || !amount || Number(amount) <= 0 || Number(amount) > maxBRL
             }
-            className="btn-primary mt-6 w-full py-4 text-base"
+            className="btn-primary mt-6 w-full"
           >
             {signing
               ? 'Assinando Kamino...'
@@ -195,10 +194,10 @@ export default function WithdrawPage() {
           </button>
 
           {IS_MOCK && (
-            <p className="mt-3 text-center text-xs text-amber-300/80">Modo MOCK · PIX simulado</p>
+            <p className="mt-3 text-center text-[11px] text-warning/80">Modo MOCK · PIX simulado</p>
           )}
           {kaminoRealMode && (
-            <p className="mt-1 text-center text-xs text-brand-300">
+            <p className="mt-1 text-center text-[11px] text-accent">
               Kamino {kaminoCfg?.env} · withdraw on-chain antes do PIX
             </p>
           )}
@@ -209,35 +208,33 @@ export default function WithdrawPage() {
         <section className="card animate-slide-up">
           {isPaid ? (
             <div className="text-center">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-brand-500/20 text-brand-300 shadow-glow">
+              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft text-accent shadow-accent">
                 <Check className="h-10 w-10" strokeWidth={3} />
               </div>
-              <h2 className="font-display text-2xl font-bold text-ink-50">PIX enviado!</h2>
-              <p className="mt-1 text-sm text-ink-300">
+              <h2 className="text-h2 text-fg">PIX enviado!</h2>
+              <p className="mt-1 text-[13px] text-fg-mid">
                 {formatBRL(payload.amountBRL)} caíram na sua chave PIX.
               </p>
-              <p className="mt-2 break-all font-mono text-xs text-ink-500">{payload.pixKey}</p>
+              <p className="mt-2 break-all font-mono text-[11px] text-fg-dim">{payload.pixKey}</p>
               {kaminoSig && (
-                <div className="mt-4 rounded-2xl bg-ink-900/60 p-3 ring-1 ring-white/5">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-ink-500">
+                <div className="mt-4 rounded-[14px] bg-bg-2 p-3 ring-1 ring-line">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-fg-dim">
                     Kamino on-chain
                   </p>
-                  <p className="mt-1 break-all font-mono text-[11px] text-brand-300">
-                    {kaminoSig}
-                  </p>
+                  <p className="mt-1 break-all font-mono text-[11px] text-accent">{kaminoSig}</p>
                 </div>
               )}
-              <button onClick={() => router.push('/app')} className="btn-primary mt-6 w-full py-4">
+              <button onClick={() => router.push('/app')} className="btn-primary mt-6 w-full">
                 Voltar
               </button>
             </div>
           ) : (
             <>
-              <p className="text-sm text-ink-300">Processando saque</p>
-              <p className="mt-1 font-display text-3xl font-bold text-ink-50">
+              <p className="text-[13px] text-fg-mid">Processando saque</p>
+              <p className="mt-1 text-display tracking-tight text-fg">
                 {formatBRL(payload.amountBRL)}
               </p>
-              <p className="text-xs text-ink-400">≈ {formatUSDC(payload.amountUSDC, 6)}</p>
+              <p className="text-[11px] text-fg-dim">≈ {formatUSDC(payload.amountUSDC, 6)}</p>
 
               <div className="mt-6 space-y-3">
                 <StepRow
@@ -249,27 +246,25 @@ export default function WithdrawPage() {
               </div>
 
               {kaminoSig && (
-                <div className="mt-4 rounded-2xl bg-ink-900/60 p-3 ring-1 ring-white/5">
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-ink-500">
+                <div className="mt-4 rounded-[14px] bg-bg-2 p-3 ring-1 ring-line">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-fg-dim">
                     Kamino signature
                   </p>
-                  <p className="mt-1 break-all font-mono text-[11px] text-brand-300">
-                    {kaminoSig}
-                  </p>
+                  <p className="mt-1 break-all font-mono text-[11px] text-accent">{kaminoSig}</p>
                 </div>
               )}
 
-              <div className="mt-4 rounded-2xl bg-ink-900/60 p-3 ring-1 ring-white/5">
-                <p className="text-[10px] font-medium uppercase tracking-wider text-ink-500">
+              <div className="mt-4 rounded-[14px] bg-bg-2 p-3 ring-1 ring-line">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-fg-dim">
                   Destino
                 </p>
-                <p className="mt-1 break-all font-mono text-xs text-ink-200">{payload.pixKey}</p>
+                <p className="mt-1 break-all font-mono text-[12px] text-fg">{payload.pixKey}</p>
               </div>
 
               {IS_MOCK && (
                 <button
                   onClick={simulatePayment}
-                  className="mt-4 w-full rounded-2xl border border-dashed border-amber-500/30 bg-amber-500/5 px-4 py-2.5 text-xs font-medium text-amber-300 hover:bg-amber-500/10"
+                  className="mt-4 w-full rounded-full border border-dashed border-warning/30 bg-warning/5 px-4 py-2.5 text-[12px] font-medium text-warning hover:bg-warning/10"
                 >
                   🧪 Simular confirmação PIX · mock
                 </button>
@@ -288,15 +283,15 @@ function StepRow({ label, done, active }: { label: string; done: boolean; active
       <div
         className={`flex h-7 w-7 items-center justify-center rounded-full text-xs transition ${
           done
-            ? 'bg-brand-500 text-white shadow-glow'
+            ? 'bg-accent text-bg-0 shadow-accent'
             : active
-              ? 'animate-pulse-soft bg-amber-400 text-ink-950'
-              : 'bg-ink-700 text-ink-500'
+              ? 'animate-pulse-soft bg-warning text-bg-0'
+              : 'bg-bg-3 text-fg-dim'
         }`}
       >
         {done ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : active ? '…' : ''}
       </div>
-      <span className={`text-sm ${done ? 'text-ink-100' : 'text-ink-400'}`}>{label}</span>
+      <span className={`text-[13px] ${done ? 'text-fg' : 'text-fg-mid'}`}>{label}</span>
     </div>
   );
 }

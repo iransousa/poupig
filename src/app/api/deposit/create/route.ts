@@ -9,10 +9,10 @@ import { fourP } from '@/lib/four-p';
 import { getLastCall } from '@/lib/four-p/real-client';
 import { loadDecryptedUserByPrivyId } from '@/lib/crypto/decrypt-user';
 import { env } from '@/env';
-import { computeOnrampFees, loadFeeConfig, recordFees } from '@/lib/fees/calc';
+import { computeOnrampFees, loadFeeConfig, recordFees, validateLimits } from '@/lib/fees/calc';
 
 const schema = z.object({
-  amountBRL: z.coerce.number().min(1).max(50000),
+  amountBRL: z.coerce.number().positive().max(1_000_000),
 });
 
 export async function POST(req: Request) {
@@ -28,12 +28,15 @@ export async function POST(req: Request) {
   }
 
   const feeCfg = await loadFeeConfig();
-  if (parsed.data.amountBRL < feeCfg.minDepositBrl) {
+  const limitCheck = await validateLimits({
+    userId: user.id,
+    kind: 'onramp',
+    amountBrl: parsed.data.amountBRL,
+    cfg: feeCfg,
+  });
+  if (!limitCheck.ok) {
     return NextResponse.json(
-      {
-        error: 'below_minimum',
-        message: `Valor mínimo de depósito: R$ ${feeCfg.minDepositBrl.toFixed(2)}`,
-      },
+      { error: limitCheck.error, message: limitCheck.message },
       { status: 400 },
     );
   }

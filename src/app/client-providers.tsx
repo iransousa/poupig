@@ -43,7 +43,7 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
         loginMethods: ['email', 'google'],
         appearance: {
           theme: 'dark',
-          accentColor: '#a855f7',
+          accentColor: '#FF3D85',
           logo: undefined,
         },
         embeddedWallets: {
@@ -65,9 +65,9 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
           position="top-center"
           toastOptions={{
             style: {
-              background: '#181823',
-              border: '1px solid rgba(255,255,255,0.06)',
-              color: '#f5f5fa',
+              background: '#1c1c1f',
+              border: '1px solid rgba(255,255,255,0.1)',
+              color: '#f7f7f8',
             },
           }}
         />

@@ -189,7 +189,17 @@ export const feeConfig = pgTable('fee_config', {
   offrampPercentBps: integer('offramp_percent_bps').notNull().default(0),
   performancePercentBps: integer('performance_percent_bps').notNull().default(0),
   minDepositBrl: numeric('min_deposit_brl', { precision: 10, scale: 2 }).notNull().default('1'),
+  maxDepositBrl: numeric('max_deposit_brl', { precision: 18, scale: 2 })
+    .notNull()
+    .default('5000'),
   minWithdrawBrl: numeric('min_withdraw_brl', { precision: 10, scale: 2 }).notNull().default('1'),
+  maxWithdrawBrl: numeric('max_withdraw_brl', { precision: 18, scale: 2 })
+    .notNull()
+    .default('5000'),
+  dailyMaxBrl: numeric('daily_max_brl', { precision: 18, scale: 2 }).notNull().default('10000'),
+  monthlyMaxBrl: numeric('monthly_max_brl', { precision: 18, scale: 2 })
+    .notNull()
+    .default('100000'),
   updatedBy: uuid('updated_by').references(() => users.id),
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
