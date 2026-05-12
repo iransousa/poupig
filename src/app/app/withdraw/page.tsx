@@ -91,7 +91,7 @@ export default function WithdrawPage() {
       });
       setPayload(res);
       setTxId(res.id);
-      toast.success('Saque iniciado!');
+      toast.success('🐷 Saque iniciado!');
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erro ao sacar';
       if (msg === 'insufficient_balance') toast.error('Saldo insuficiente');

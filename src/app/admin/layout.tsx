@@ -14,6 +14,7 @@ import {
   Users,
 } from 'lucide-react';
 import { useAdminGuard } from '@/hooks/use-admin';
+import { Logo } from '@/components/logo';
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -40,11 +41,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (!ready || !authenticated || isLoading || !isAdmin) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-fg-mid">
-        <div className="flex items-center gap-3">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-          Verificando permissões...
-        </div>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3">
+        <Logo size={56} withGlow />
+        <p className="text-[13px] text-fg-mid">Verificando permissões...</p>
       </div>
     );
   }
@@ -61,9 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </Link>
 
         <div className="mb-6 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-[14px] bg-accent font-display font-bold text-bg-0 shadow-accent">
-            P
-          </div>
+          <Logo size={36} />
           <div>
             <p className="font-display text-[13px] font-bold text-fg">PoupApp</p>
             <p className="text-[10px] font-semibold uppercase tracking-wider text-accent">
@@ -101,6 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <Link href="/app" className="text-fg-mid">
             <ArrowLeft className="h-4 w-4" />
           </Link>
+          <Logo size={24} />
           <p className="font-display text-[13px] font-bold">Admin</p>
         </div>
         {children}

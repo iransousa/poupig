@@ -7,6 +7,14 @@ import { Providers } from './providers';
 export const metadata: Metadata = {
   title: 'PoupApp — Sua poupança em dólar',
   description: 'Poupança DeFi em USDC via PIX. Rendimento diário, saque instantâneo.',
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/logo.svg', type: 'image/svg+xml' },
+    ],
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

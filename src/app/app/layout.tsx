@@ -21,11 +21,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (!ready || !authenticated || isLoading || (me && !me.onboarded)) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-fg-mid">
-        <div className="flex items-center gap-3">
-          <div className="h-2 w-2 animate-pulse rounded-full bg-accent" />
-          Carregando...
-        </div>
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.svg"
+          alt=""
+          width={56}
+          height={56}
+          className="animate-pulse-soft"
+          style={{ filter: 'drop-shadow(0 8px 24px rgba(255, 61, 133, 0.5))' }}
+        />
+        <p className="text-[13px] text-fg-mid">Carregando...</p>
       </div>
     );
   }

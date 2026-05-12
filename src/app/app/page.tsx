@@ -2,10 +2,11 @@
 
 import { usePrivy } from '@privy-io/react-auth';
 import { toast } from 'sonner';
-import { ArrowDown, ArrowUp, History, LogOut, Send, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, LogOut, Send, Sparkles, TrendingUp, Wallet } from 'lucide-react';
 import { useMe } from '@/hooks/use-me';
 import { useBalance } from '@/hooks/use-balance';
 import { useYield } from '@/hooks/use-yield';
+import { useWalletBalance } from '@/hooks/use-wallet-balance';
 import { formatBRL, formatPct, formatUSD, greeting } from '@/lib/utils';
 import { YieldChart } from '@/components/yield-chart';
 import { EnvBadge } from '@/components/env-badge';
@@ -20,6 +21,7 @@ export default function Dashboard() {
   const { data: me } = useMe();
   const { data: balance } = useBalance();
   const { data: yieldData } = useYield();
+  const { data: walletBalance } = useWalletBalance();
   const qc = useQueryClient();
 
   const apy = yieldData?.apy ?? balance?.apy ?? 0;
@@ -98,6 +100,37 @@ export default function Dashboard() {
           </div>
         </div>
         <YieldChart series={yieldData?.series ?? []} />
+      </section>
+
+      {/* Wallet balance on-chain */}
+      <section className="mt-3 rounded-[20px] bg-bg-1 p-4 ring-1 ring-line">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-[10px] bg-bg-3 text-fg-mid">
+              <Wallet className="h-3.5 w-3.5" />
+            </div>
+            <p className="text-[13px] font-medium text-fg">Saldo da carteira</p>
+          </div>
+          <p className="text-[10px] uppercase tracking-wider text-fg-dim">on-chain</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-[11px] text-fg-dim">USDC</p>
+            <p className="text-h3 text-fg">{(walletBalance?.usdc ?? 0).toFixed(4)}</p>
+          </div>
+          <div>
+            <p className="text-[11px] text-fg-dim">SOL</p>
+            <p className="text-h3 text-fg">{(walletBalance?.sol ?? 0).toFixed(4)}</p>
+          </div>
+        </div>
+        {walletBalance && walletBalance.usdc > 0.01 && (
+          <a
+            href="/app/deposit"
+            className="mt-3 block rounded-full bg-accent-soft px-3 py-2 text-center text-[12px] font-medium text-accent ring-1 ring-accent/30 transition hover:bg-accent/15"
+          >
+            ✨ Aplicar {(walletBalance.usdc).toFixed(2)} USDC no Kamino
+          </a>
+        )}
       </section>
 
       {/* KPIs */}

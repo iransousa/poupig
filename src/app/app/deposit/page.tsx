@@ -67,6 +67,7 @@ export default function DepositPage() {
       });
       setPayload(res);
       setTxId(res.id);
+      toast.success('🐷 PIX gerado! Pague no seu banco.');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao criar depósito');
     } finally {
@@ -237,6 +238,14 @@ export default function DepositPage() {
 
               <div className="mt-6 flex justify-center rounded-[20px] bg-white p-6">
                 <QRCodeSVG value={payload.pixCopiaECola} size={200} level="M" />
+              </div>
+
+              <div className="mt-3 flex items-start gap-2 rounded-[14px] bg-warning/10 p-3 ring-1 ring-warning/20">
+                <span className="text-warning">⚠️</span>
+                <p className="text-[12px] text-warning">
+                  Pague exatamente <strong>{formatBRL(payload.amountBRL)}</strong>. Valor
+                  diferente pode ficar pendente na 4P.
+                </p>
               </div>
 
               <button

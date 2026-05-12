@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { ArrowRight, Shield, TrendingUp, Zap } from 'lucide-react';
 import { useMe } from '@/hooks/use-me';
+import { Logo } from '@/components/logo';
 
 export default function Home() {
   const { ready, authenticated, login } = usePrivy();
@@ -23,12 +24,7 @@ export default function Home() {
 
       <div className="relative z-10 w-full max-w-md animate-slide-up space-y-8 text-center">
         <div className="flex items-center justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-3xl bg-accent blur-xl opacity-50" />
-            <div className="relative flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-brand font-display text-3xl font-bold text-bg-0 shadow-accent">
-              P
-            </div>
-          </div>
+          <Logo size={88} withGlow />
         </div>
 
         <div className="space-y-3">

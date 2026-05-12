@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { Check, ShieldCheck, Wallet } from 'lucide-react';
 import { apiFetch } from '@/lib/api/client';
 import { useMe } from '@/hooks/use-me';
+import { Logo } from '@/components/logo';
 import { formatCPF, isValidCPF } from '@/lib/validators/cpf';
 import { isValidPixKey } from '@/lib/validators/pix';
 
@@ -69,7 +70,7 @@ export default function OnboardingPage() {
         onboarded: true,
       }));
       await qc.refetchQueries({ queryKey: ['me'] });
-      toast.success('Cadastro concluído!');
+      toast.success('🐷 Cadastro concluído!');
       router.replace('/app');
     } catch (err) {
       toast.error(err instanceof Error ? err.message : 'Erro ao cadastrar');
@@ -80,8 +81,9 @@ export default function OnboardingPage() {
 
   if (!ready || isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-fg-mid">
-        Carregando...
+      <div className="flex min-h-screen flex-col items-center justify-center gap-3">
+        <Logo size={56} withGlow />
+        <p className="text-[13px] text-fg-mid">Carregando...</p>
       </div>
     );
   }
@@ -89,10 +91,15 @@ export default function OnboardingPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-5 py-10">
       <form onSubmit={handleSubmit} className="card w-full max-w-md animate-slide-up">
-        <h1 className="text-h1 text-fg">Bem-vindo 👋</h1>
-        <p className="mt-1 text-[13px] text-fg-mid">
-          Só mais alguns dados pra liberar depósitos via PIX.
-        </p>
+        <div className="mb-4 flex items-center gap-3">
+          <Logo size={48} />
+          <div>
+            <h1 className="text-h2 text-fg">Bem-vindo 👋</h1>
+            <p className="text-[13px] text-fg-mid">
+              Só mais alguns dados pra liberar depósitos via PIX.
+            </p>
+          </div>
+        </div>
 
         <div
           className={`mt-5 flex items-start gap-3 rounded-[14px] p-3 ring-1 ${
